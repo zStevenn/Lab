@@ -10,17 +10,23 @@ public class PlayerController : MonoBehaviour
     public float speed = 20.0f;
     public float xRange = 14.0f;
     private Rigidbody playerRb;
+    private GameManager gameManager;
     // Start is called before the first frame update
     void Start()
     {
         playerRb = GetComponent<Rigidbody>();
+        gameManager = FindObjectOfType<GameManager>();
     }
 
     // Update is called once per frame
     void Update()
     {
-        RestrictMovement();
-        MovePlayer();
+        if (gameManager.isGameActive)
+        {
+            RestrictMovement();
+            MovePlayer();
+        }
+
     }
 
     void RestrictMovement()
@@ -43,5 +49,11 @@ public class PlayerController : MonoBehaviour
         transform.Translate(speed * horizontalInput * Time.deltaTime * Vector3.right);
     }
 
-
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (collision.gameObject.CompareTag("Junkfood"))
+        {
+            gameManager.GameOver();
+        }
+    }
 }
